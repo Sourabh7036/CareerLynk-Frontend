@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Navbar from '../shared/Navbar'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
@@ -11,51 +11,23 @@ import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLoading } from '@/redux/authSlice'
 import { Loader2 } from 'lucide-react'
+import { useForm } from 'react-hook-form'
 
 const Signup = () => {
-
-    const [input, setInput] = useState({
-        fullname: "",
-        email: "",
-        phoneNumber: "",
-        password: "",
-        role: "",
-        file: ""
-    });
-    const {loading,user} = useSelector(store=>store.auth);
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { loading, user } = useSelector(store => store.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const changeEventHandler = (e) => {
-        setInput({ ...input, [e.target.name]: e.target.value });
-    }
-    const changeFileHandler = (e) => {
-        setInput({ ...input, file: e.target.files?.[0] });
-    }
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        
-        if (!input.fullname || !input.email || !input.phoneNumber || !input.password || !input.role || !input.file) {
-            toast.error("Please fill all the mandatory fields.");
-            return;
-        }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
-            toast.error("Please enter a valid email address.");
-            return;
-        }
-        if (!/^\d{10}$/.test(input.phoneNumber)) {
-            toast.error("Phone number must be exactly 10 digits and numbers only.");
-            return;
-        }
-
-        const formData = new FormData();    //formdata object
-        formData.append("fullname", input.fullname);
-        formData.append("email", input.email);
-        formData.append("phoneNumber", input.phoneNumber);
-        formData.append("password", input.password);
-        formData.append("role", input.role);
-        if (input.file) {
-            formData.append("profilePhoto", input.file);
+    const onSubmit = async (data) => {
+        const formData = new FormData();
+        formData.append("fullname", data.fullname);
+        formData.append("email", data.email);
+        formData.append("phoneNumber", data.phoneNumber);
+        formData.append("password", data.password);
+        formData.append("role", data.role);
+        if (data.file && data.file[0]) {
+            formData.append("profilePhoto", data.file[0]);
         }
 
         try {
@@ -82,96 +54,100 @@ const Signup = () => {
             navigate("/");
         }
     },[])
+
     return (
         <div>
             <Navbar />
             <div className='flex items-center justify-center max-w-7xl mx-auto'>
-                <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
+                <form onSubmit={handleSubmit(onSubmit)} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
                     <h1 className='font-bold text-xl mb-5'>Sign Up</h1>
                     <div className='my-2'>
                         <Label>Full Name <span className="text-red-500">*</span></Label>
                         <Input
                             type="text"
-                            value={input.fullname}
-                            name="fullname"
-                            onChange={changeEventHandler}
+                            {...register("fullname", { required: "Full name is required" })}
                             placeholder="patel"
-                            required
                         />
+                        {errors.fullname && <span className="text-red-500 text-sm">{errors.fullname.message}</span>}
                     </div>
                     <div className='my-2'>
                         <Label>Email <span className="text-red-500">*</span></Label>
                         <Input
                             type="email"
-                            value={input.email}
-                            name="email"
-                            onChange={changeEventHandler}
+                            {...register("email", { 
+                                required: "Email is required",
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: "Please enter a valid email address."
+                                }
+                            })}
                             placeholder="patel@gmail.com"
-                            required
                         />
+                        {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
                     </div>
                     <div className='my-2'>
                         <Label>Phone Number <span className="text-red-500">*</span></Label>
                         <Input
                             type="text"
-                            value={input.phoneNumber}
-                            name="phoneNumber"
-                            onChange={changeEventHandler}
+                            {...register("phoneNumber", { 
+                                required: "Phone number is required",
+                                pattern: {
+                                    value: /^\d{10}$/,
+                                    message: "Phone number must be exactly 10 digits."
+                                }
+                            })}
                             placeholder="8080808080"
-                            required
                         />
+                        {errors.phoneNumber && <span className="text-red-500 text-sm">{errors.phoneNumber.message}</span>}
                     </div>
                     <div className='my-2'>
                         <Label>Password <span className="text-red-500">*</span></Label>
                         <Input
                             type="password"
-                            value={input.password}
-                            name="password"
-                            onChange={changeEventHandler}
-                            placeholder="patel@gmail.com"
-                            required
+                            {...register("password", { required: "Password is required" })}
+                            placeholder="password"
                         />
+                        {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
                     </div>
                     <div className='flex items-center justify-between'>
-                        <RadioGroup className="flex items-center gap-4 my-5">
-                            <div className="flex items-center space-x-2">
+                        <div className="my-5">
+                            <RadioGroup className="flex items-center gap-4">
+                                <div className="flex items-center space-x-2">
+                                    <Input
+                                        type="radio"
+                                        value="student"
+                                        {...register("role", { required: "Role is required" })}
+                                        className="cursor-pointer"
+                                    />
+                                    <Label htmlFor="r1">Student</Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <Input
+                                        type="radio"
+                                        value="recruiter"
+                                        {...register("role", { required: "Role is required" })}
+                                        className="cursor-pointer"
+                                    />
+                                    <Label htmlFor="r2">Recruiter</Label>
+                                </div>
+                            </RadioGroup>
+                            {errors.role && <span className="text-red-500 text-sm block mt-1">{errors.role.message}</span>}
+                        </div>
+                        <div className='flex flex-col gap-2'>
+                            <div className='flex items-center gap-2'>
+                                <Label>Profile <span className="text-red-500">*</span></Label>
                                 <Input
-                                    type="radio"
-                                    name="role"
-                                    value="student"
-                                    checked={input.role === 'student'}
-                                    onChange={changeEventHandler}
+                                    accept="image/*"
+                                    type="file"
+                                    {...register("file", { required: "Profile photo is required" })}
                                     className="cursor-pointer"
-                                    required
                                 />
-                                <Label htmlFor="r1">Student</Label>
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <Input
-                                    type="radio"
-                                    name="role"
-                                    value="recruiter"
-                                    checked={input.role === 'recruiter'}
-                                    onChange={changeEventHandler}
-                                    className="cursor-pointer"
-                                    required
-                                />
-                                <Label htmlFor="r2">Recruiter</Label>
-                            </div>
-                        </RadioGroup>
-                        <div className='flex items-center gap-2'>
-                            <Label>Profile <span className="text-red-500">*</span></Label>
-                            <Input
-                                accept="image/*"
-                                type="file"
-                                onChange={changeFileHandler}
-                                className="cursor-pointer"
-                                required
-                            />
+                            {errors.file && <span className="text-red-500 text-sm">{errors.file.message}</span>}
                         </div>
                     </div>
                     {
-                        loading ? <Button className="w-full my-4"> <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type="submit" className="w-full my-4">Signup</Button>
+                        loading ? <Button className="w-full my-4" type="button" disabled> <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type="submit" className="w-full my-4">Signup</Button>
                     }
                     <span className='text-sm'>Already have an account? <Link to="/login" className='text-blue-600'>Login</Link></span>
                 </form>
