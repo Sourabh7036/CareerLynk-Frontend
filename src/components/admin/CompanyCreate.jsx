@@ -15,6 +15,10 @@ const CompanyCreate = () => {
     const [companyName, setCompanyName] = useState();
     const dispatch = useDispatch();
     const registerNewCompany = async () => {
+        if (!companyName || companyName.trim() === "") {
+            toast.error("Company Name is required.");
+            return;
+        }
         try {
             const res = await axios.post(`${COMPANY_API_END_POINT}/register`, {companyName}, {
                 headers:{
@@ -41,17 +45,20 @@ const CompanyCreate = () => {
                     <p className='text-gray-500'>What would you like to give your company name? you can change this later.</p>
                 </div>
 
-                <Label>Company Name</Label>
-                <Input
-                    type="text"
-                    className="my-2"
-                    placeholder="JobHunt, Microsoft etc."
-                    onChange={(e) => setCompanyName(e.target.value)}
-                />
-                <div className='flex items-center gap-2 my-10'>
-                    <Button variant="outline" onClick={() => navigate("/admin/companies")}>Cancel</Button>
-                    <Button onClick={registerNewCompany}>Continue</Button>
-                </div>
+                <form onSubmit={(e) => { e.preventDefault(); registerNewCompany(); }}>
+                    <Label>Company Name <span className="text-red-500">*</span></Label>
+                    <Input
+                        type="text"
+                        className="my-2"
+                        placeholder="JobHunt, Microsoft etc."
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        required
+                    />
+                    <div className='flex items-center gap-2 my-10'>
+                        <Button type="button" variant="outline" onClick={() => navigate("/admin/companies")}>Cancel</Button>
+                        <Button type="submit">Continue</Button>
+                    </div>
+                </form>
             </div>
         </div>
     )

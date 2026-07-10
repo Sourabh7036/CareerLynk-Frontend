@@ -34,6 +34,20 @@ const Signup = () => {
     }
     const submitHandler = async (e) => {
         e.preventDefault();
+        
+        if (!input.fullname || !input.email || !input.phoneNumber || !input.password || !input.role || !input.file) {
+            toast.error("Please fill all the mandatory fields.");
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
+            toast.error("Please enter a valid email address.");
+            return;
+        }
+        if (!/^\d{10}$/.test(input.phoneNumber)) {
+            toast.error("Phone number must be exactly 10 digits and numbers only.");
+            return;
+        }
+
         const formData = new FormData();    //formdata object
         formData.append("fullname", input.fullname);
         formData.append("email", input.email);
@@ -75,43 +89,47 @@ const Signup = () => {
                 <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
                     <h1 className='font-bold text-xl mb-5'>Sign Up</h1>
                     <div className='my-2'>
-                        <Label>Full Name</Label>
+                        <Label>Full Name <span className="text-red-500">*</span></Label>
                         <Input
                             type="text"
                             value={input.fullname}
                             name="fullname"
                             onChange={changeEventHandler}
                             placeholder="patel"
+                            required
                         />
                     </div>
                     <div className='my-2'>
-                        <Label>Email</Label>
+                        <Label>Email <span className="text-red-500">*</span></Label>
                         <Input
                             type="email"
                             value={input.email}
                             name="email"
                             onChange={changeEventHandler}
                             placeholder="patel@gmail.com"
+                            required
                         />
                     </div>
                     <div className='my-2'>
-                        <Label>Phone Number</Label>
+                        <Label>Phone Number <span className="text-red-500">*</span></Label>
                         <Input
                             type="text"
                             value={input.phoneNumber}
                             name="phoneNumber"
                             onChange={changeEventHandler}
                             placeholder="8080808080"
+                            required
                         />
                     </div>
                     <div className='my-2'>
-                        <Label>Password</Label>
+                        <Label>Password <span className="text-red-500">*</span></Label>
                         <Input
                             type="password"
                             value={input.password}
                             name="password"
                             onChange={changeEventHandler}
                             placeholder="patel@gmail.com"
+                            required
                         />
                     </div>
                     <div className='flex items-center justify-between'>
@@ -124,6 +142,7 @@ const Signup = () => {
                                     checked={input.role === 'student'}
                                     onChange={changeEventHandler}
                                     className="cursor-pointer"
+                                    required
                                 />
                                 <Label htmlFor="r1">Student</Label>
                             </div>
@@ -135,17 +154,19 @@ const Signup = () => {
                                     checked={input.role === 'recruiter'}
                                     onChange={changeEventHandler}
                                     className="cursor-pointer"
+                                    required
                                 />
                                 <Label htmlFor="r2">Recruiter</Label>
                             </div>
                         </RadioGroup>
                         <div className='flex items-center gap-2'>
-                            <Label>Profile</Label>
+                            <Label>Profile <span className="text-red-500">*</span></Label>
                             <Input
                                 accept="image/*"
                                 type="file"
                                 onChange={changeFileHandler}
                                 className="cursor-pointer"
+                                required
                             />
                         </div>
                     </div>

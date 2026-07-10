@@ -28,6 +28,16 @@ const Login = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+        
+        if (!input.email || !input.password || !input.role) {
+            toast.error("Please fill all the mandatory fields.");
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
+            toast.error("Please enter a valid email address.");
+            return;
+        }
+
         try {
             dispatch(setLoading(true));
             const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
@@ -60,24 +70,26 @@ const Login = () => {
                 <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
                     <h1 className='font-bold text-xl mb-5'>Login</h1>
                     <div className='my-2'>
-                        <Label>Email</Label>
+                        <Label>Email <span className="text-red-500">*</span></Label>
                         <Input
                             type="email"
                             value={input.email}
                             name="email"
                             onChange={changeEventHandler}
                             placeholder="patel@gmail.com"
+                            required
                         />
                     </div>
 
                     <div className='my-2'>
-                        <Label>Password</Label>
+                        <Label>Password <span className="text-red-500">*</span></Label>
                         <Input
                             type="password"
                             value={input.password}
                             name="password"
                             onChange={changeEventHandler}
                             placeholder="patel@gmail.com"
+                            required
                         />
                     </div>
                     <div className='flex items-center justify-between'>
@@ -90,6 +102,7 @@ const Login = () => {
                                     checked={input.role === 'student'}
                                     onChange={changeEventHandler}
                                     className="cursor-pointer"
+                                    required
                                 />
                                 <Label htmlFor="r1">Student</Label>
                             </div>
@@ -101,6 +114,7 @@ const Login = () => {
                                     checked={input.role === 'recruiter'}
                                     onChange={changeEventHandler}
                                     className="cursor-pointer"
+                                    required
                                 />
                                 <Label htmlFor="r2">Recruiter</Label>
                             </div>

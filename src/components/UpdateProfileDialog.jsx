@@ -50,6 +50,20 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+
+        if (!input.fullname || !input.email || !input.phoneNumber) {
+            toast.error("Please fill all the mandatory fields.");
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
+            toast.error("Please enter a valid email address.");
+            return;
+        }
+        if (!/^\d{10}$/.test(input.phoneNumber)) {
+            toast.error("Phone number must be exactly 10 digits and numbers only.");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("fullname", input.fullname);
         formData.append("email", input.email);
@@ -88,7 +102,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 <form onSubmit={submitHandler}>
                     <div className='grid gap-4 py-4'>
                         <div className='grid grid-cols-4 items-center gap-4'>
-                            <Label htmlFor="fullname" className="text-right">Name</Label>
+                            <Label htmlFor="fullname" className="text-right">Name <span className="text-red-500">*</span></Label>
                             <Input
                                 id="fullname"
                                 name="fullname"
@@ -96,10 +110,11 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                 value={input.fullname}
                                 onChange={changeEventHandler}
                                 className="col-span-3"
+                                required
                             />
                         </div>
                         <div className='grid grid-cols-4 items-center gap-4'>
-                            <Label htmlFor="email" className="text-right">Email</Label>
+                            <Label htmlFor="email" className="text-right">Email <span className="text-red-500">*</span></Label>
                             <Input
                                 id="email"
                                 name="email"
@@ -107,16 +122,18 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                 value={input.email}
                                 onChange={changeEventHandler}
                                 className="col-span-3"
+                                required
                             />
                         </div>
                         <div className='grid grid-cols-4 items-center gap-4'>
-                            <Label htmlFor="phoneNumber" className="text-right">Number</Label>
+                            <Label htmlFor="phoneNumber" className="text-right">Number <span className="text-red-500">*</span></Label>
                             <Input
                                 id="phoneNumber"
                                 name="phoneNumber"
                                 value={input.phoneNumber}
                                 onChange={changeEventHandler}
                                 className="col-span-3"
+                                required
                             />
                         </div>
                         <div className='grid grid-cols-4 items-center gap-4'>

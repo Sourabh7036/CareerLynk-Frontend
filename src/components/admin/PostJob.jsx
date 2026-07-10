@@ -40,6 +40,12 @@ const PostJob = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+
+        if (!input.title || !input.description || !input.requirements || !input.salary || !input.location || !input.jobType || !input.experience || !input.position || !input.companyId) {
+            toast.error("Please fill all the mandatory fields.");
+            return;
+        }
+
         try {
             setLoading(true);
             const res = await axios.post(`${JOB_API_END_POINT}/post`, input,{
@@ -66,83 +72,91 @@ const PostJob = () => {
                 <form onSubmit = {submitHandler} className='p-8 max-w-4xl border border-gray-200 shadow-lg rounded-md'>
                     <div className='grid grid-cols-2 gap-2'>
                         <div>
-                            <Label>Title</Label>
+                            <Label>Title <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="title"
                                 value={input.title}
                                 onChange={changeEventHandler}
                                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
+                                required
                             />
                         </div>
                         <div>
-                            <Label>Description</Label>
+                            <Label>Description <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="description"
                                 value={input.description}
                                 onChange={changeEventHandler}
                                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
+                                required
                             />
                         </div>
                         <div>
-                            <Label>Requirements</Label>
+                            <Label>Requirements <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="requirements"
                                 value={input.requirements}
                                 onChange={changeEventHandler}
                                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
+                                required
                             />
                         </div>
                         <div>
-                            <Label>Salary</Label>
+                            <Label>Salary <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="salary"
                                 value={input.salary}
                                 onChange={changeEventHandler}
                                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
+                                required
                             />
                         </div>
                         <div>
-                            <Label>Location</Label>
+                            <Label>Location <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="location"
                                 value={input.location}
                                 onChange={changeEventHandler}
                                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
+                                required
                             />
                         </div>
                         <div>
-                            <Label>Job Type</Label>
+                            <Label>Job Type <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="jobType"
                                 value={input.jobType}
                                 onChange={changeEventHandler}
                                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
+                                required
                             />
                         </div>
                         <div>
-                            <Label>Experience Level</Label>
+                            <Label>Experience Level <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="experience"
                                 value={input.experience}
                                 onChange={changeEventHandler}
                                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
+                                required
                             />
                         </div>
                         <div>
-                            <Label>No of Postion</Label>
+                            <Label>No of Postion <span className="text-red-500">*</span></Label>
                             <Input
                                 type="number"
                                 name="position"
                                 value={input.position}
                                 onChange={changeEventHandler}
                                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
+                                required
                             />
                         </div>
                         {

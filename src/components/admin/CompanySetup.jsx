@@ -36,6 +36,12 @@ const CompanySetup = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+
+        if (!input.name || !input.description || !input.website || !input.location) {
+            toast.error("Please fill all the mandatory fields.");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("name", input.name);
         formData.append("description", input.description);
@@ -88,39 +94,43 @@ const CompanySetup = () => {
                     </div>
                     <div className='grid grid-cols-2 gap-4'>
                         <div>
-                            <Label>Company Name</Label>
+                            <Label>Company Name <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="name"
                                 value={input.name}
                                 onChange={changeEventHandler}
+                                required
                             />
                         </div>
                         <div>
-                            <Label>Description</Label>
+                            <Label>Description <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="description"
                                 value={input.description}
                                 onChange={changeEventHandler}
+                                required
                             />
                         </div>
                         <div>
-                            <Label>Website</Label>
+                            <Label>Website <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="website"
                                 value={input.website}
                                 onChange={changeEventHandler}
+                                required
                             />
                         </div>
                         <div>
-                            <Label>Location</Label>
+                            <Label>Location <span className="text-red-500">*</span></Label>
                             <Input
                                 type="text"
                                 name="location"
                                 value={input.location}
                                 onChange={changeEventHandler}
+                                required
                             />
                         </div>
                         <div>
